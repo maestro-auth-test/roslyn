@@ -15,9 +15,9 @@
       Keep the setting conditional. The toolset sets the assembly version to 42.42.42.42 if not set explicitly.
     -->
     <AssemblyVersion Condition="'$(OfficialBuild)' == 'true' or '$(DotNetUseShippingVersions)' == 'true'">$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
-    <MicrosoftCodeAnalysisVersion>5.0.0-1.25215.101</MicrosoftCodeAnalysisVersion>
-    <MicrosoftDotNetXliffTasksVersion>10.0.0-beta.25215.101</MicrosoftDotNetXliffTasksVersion>
-    <MicrosoftNetCompilersToolsetVersion>5.0.0-1.25215.101</MicrosoftNetCompilersToolsetVersion>
+    <MicrosoftCodeAnalysisVersion>5.0.0-1.25215.102</MicrosoftCodeAnalysisVersion>
+    <MicrosoftDotNetXliffTasksVersion>10.0.0-beta.25215.102</MicrosoftDotNetXliffTasksVersion>
+    <MicrosoftNetCompilersToolsetVersion>5.0.0-1.25215.102</MicrosoftNetCompilersToolsetVersion>
   </PropertyGroup>
   <!--
     The maintenance-packages dependency versions need to be conditionally selected:
@@ -51,38 +51,38 @@
     Versions managed by Arcade (see Versions.Details.xml)
   -->
   <PropertyGroup>
-    <SystemCommandLineVersion>2.0.0-beta4.25215.101</SystemCommandLineVersion>
-    <SystemCompositionVersion>10.0.0-preview.4.25215.101</SystemCompositionVersion>
-    <SystemConfigurationConfigurationManagerVersion>10.0.0-preview.4.25215.101</SystemConfigurationConfigurationManagerVersion>
-    <SystemDiagnosticsEventLogVersion>10.0.0-preview.4.25215.101</SystemDiagnosticsEventLogVersion>
-    <SystemCollectionsImmutableVersion>10.0.0-preview.4.25215.101</SystemCollectionsImmutableVersion>
-    <SystemComponentModelCompositionVersion>10.0.0-preview.4.25215.101</SystemComponentModelCompositionVersion>
-    <SystemDiagnosticsDiagnosticSourceVersion>10.0.0-preview.4.25215.101</SystemDiagnosticsDiagnosticSourceVersion>
-    <SystemIOHashingVersion>10.0.0-preview.4.25215.101</SystemIOHashingVersion>
-    <SystemIOPipelinesVersion>10.0.0-preview.4.25215.101</SystemIOPipelinesVersion>
-    <SystemReflectionMetadataVersion>10.0.0-preview.4.25215.101</SystemReflectionMetadataVersion>
-    <SystemResourcesExtensionsVersion>10.0.0-preview.4.25215.101</SystemResourcesExtensionsVersion>
-    <SystemSecurityCryptographyProtectedDataVersion>10.0.0-preview.4.25215.101</SystemSecurityCryptographyProtectedDataVersion>
-    <SystemSecurityPermissionsVersion>10.0.0-preview.4.25215.101</SystemSecurityPermissionsVersion>
-    <SystemTextEncodingsWebVersion>10.0.0-preview.4.25215.101</SystemTextEncodingsWebVersion>
+    <SystemCommandLineVersion>2.0.0-beta4.25215.102</SystemCommandLineVersion>
+    <SystemCompositionVersion>10.0.0-preview.4.25215.102</SystemCompositionVersion>
+    <SystemConfigurationConfigurationManagerVersion>10.0.0-preview.4.25215.102</SystemConfigurationConfigurationManagerVersion>
+    <SystemDiagnosticsEventLogVersion>10.0.0-preview.4.25215.102</SystemDiagnosticsEventLogVersion>
+    <SystemCollectionsImmutableVersion>10.0.0-preview.4.25215.102</SystemCollectionsImmutableVersion>
+    <SystemComponentModelCompositionVersion>10.0.0-preview.4.25215.102</SystemComponentModelCompositionVersion>
+    <SystemDiagnosticsDiagnosticSourceVersion>10.0.0-preview.4.25215.102</SystemDiagnosticsDiagnosticSourceVersion>
+    <SystemIOHashingVersion>10.0.0-preview.4.25215.102</SystemIOHashingVersion>
+    <SystemIOPipelinesVersion>10.0.0-preview.4.25215.102</SystemIOPipelinesVersion>
+    <SystemReflectionMetadataVersion>10.0.0-preview.4.25215.102</SystemReflectionMetadataVersion>
+    <SystemResourcesExtensionsVersion>10.0.0-preview.4.25215.102</SystemResourcesExtensionsVersion>
+    <SystemSecurityCryptographyProtectedDataVersion>10.0.0-preview.4.25215.102</SystemSecurityCryptographyProtectedDataVersion>
+    <SystemSecurityPermissionsVersion>10.0.0-preview.4.25215.102</SystemSecurityPermissionsVersion>
+    <SystemTextEncodingsWebVersion>10.0.0-preview.4.25215.102</SystemTextEncodingsWebVersion>
     <!-- Note: When updating SystemTextJsonVersion ensure that the version is no higher than what is used by MSBuild in VS (would lead to NGEN failures on insertion). -->
-    <SystemTextJsonVersion>10.0.0-preview.4.25215.101</SystemTextJsonVersion>
-    <SystemThreadingTasksDataflowVersion>10.0.0-preview.4.25215.101</SystemThreadingTasksDataflowVersion>
-    <SystemWindowsExtensionsVersion>10.0.0-preview.4.25215.101</SystemWindowsExtensionsVersion>
-    <MicrosoftBclAsyncInterfacesVersion>10.0.0-preview.4.25215.101</MicrosoftBclAsyncInterfacesVersion>
-    <MicrosoftCodeAnalysisAnalyzersVersion>3.12.0-beta1.25215.101</MicrosoftCodeAnalysisAnalyzersVersion>
-    <MicrosoftCodeAnalysisAnalyzerUtilitiesVersion>3.12.0-beta1.25215.101</MicrosoftCodeAnalysisAnalyzerUtilitiesVersion>
-    <MicrosoftCodeAnalysisNetAnalyzersVersion>10.0.0-preview.25215.101</MicrosoftCodeAnalysisNetAnalyzersVersion>
-    <MicrosoftDiaSymReaderVersion>2.2.0-beta.25215.101</MicrosoftDiaSymReaderVersion>
-    <MicrosoftExtensionsConfigurationVersion>10.0.0-preview.4.25215.101</MicrosoftExtensionsConfigurationVersion>
-    <MicrosoftExtensionsDependencyInjectionVersion>10.0.0-preview.4.25215.101</MicrosoftExtensionsDependencyInjectionVersion>
+    <SystemTextJsonVersion>10.0.0-preview.4.25215.102</SystemTextJsonVersion>
+    <SystemThreadingTasksDataflowVersion>10.0.0-preview.4.25215.102</SystemThreadingTasksDataflowVersion>
+    <SystemWindowsExtensionsVersion>10.0.0-preview.4.25215.102</SystemWindowsExtensionsVersion>
+    <MicrosoftBclAsyncInterfacesVersion>10.0.0-preview.4.25215.102</MicrosoftBclAsyncInterfacesVersion>
+    <MicrosoftCodeAnalysisAnalyzersVersion>3.12.0-beta1.25215.102</MicrosoftCodeAnalysisAnalyzersVersion>
+    <MicrosoftCodeAnalysisAnalyzerUtilitiesVersion>3.12.0-beta1.25215.102</MicrosoftCodeAnalysisAnalyzerUtilitiesVersion>
+    <MicrosoftCodeAnalysisNetAnalyzersVersion>10.0.0-preview.25215.102</MicrosoftCodeAnalysisNetAnalyzersVersion>
+    <MicrosoftDiaSymReaderVersion>2.2.0-beta.25215.102</MicrosoftDiaSymReaderVersion>
+    <MicrosoftExtensionsConfigurationVersion>10.0.0-preview.4.25215.102</MicrosoftExtensionsConfigurationVersion>
+    <MicrosoftExtensionsDependencyInjectionVersion>10.0.0-preview.4.25215.102</MicrosoftExtensionsDependencyInjectionVersion>
     <MicrosoftExtensionsFileSystemGlobbingVersion>8.0.0</MicrosoftExtensionsFileSystemGlobbingVersion>
-    <MicrosoftExtensionsLoggingVersion>10.0.0-preview.4.25215.101</MicrosoftExtensionsLoggingVersion>
-    <MicrosoftExtensionsLoggingAbstractionsVersion>10.0.0-preview.4.25215.101</MicrosoftExtensionsLoggingAbstractionsVersion>
-    <MicrosoftExtensionsLoggingConsoleVersion>10.0.0-preview.4.25215.101</MicrosoftExtensionsLoggingConsoleVersion>
+    <MicrosoftExtensionsLoggingVersion>10.0.0-preview.4.25215.102</MicrosoftExtensionsLoggingVersion>
+    <MicrosoftExtensionsLoggingAbstractionsVersion>10.0.0-preview.4.25215.102</MicrosoftExtensionsLoggingAbstractionsVersion>
+    <MicrosoftExtensionsLoggingConsoleVersion>10.0.0-preview.4.25215.102</MicrosoftExtensionsLoggingConsoleVersion>
     <MicrosoftExtensionsOptionsConfigurationExtensionVersion>8.0.0</MicrosoftExtensionsOptionsConfigurationExtensionVersion>
-    <MicrosoftExtensionsOptionsVersion>10.0.0-preview.4.25215.101</MicrosoftExtensionsOptionsVersion>
-    <MicrosoftExtensionsPrimitivesVersion>10.0.0-preview.4.25215.101</MicrosoftExtensionsPrimitivesVersion>
+    <MicrosoftExtensionsOptionsVersion>10.0.0-preview.4.25215.102</MicrosoftExtensionsOptionsVersion>
+    <MicrosoftExtensionsPrimitivesVersion>10.0.0-preview.4.25215.102</MicrosoftExtensionsPrimitivesVersion>
     <MicrosoftVSSDKBuildToolsVersion>17.14.1043-preview2</MicrosoftVSSDKBuildToolsVersion>
     <vswhereVersion>2.4.1</vswhereVersion>
     <!--
