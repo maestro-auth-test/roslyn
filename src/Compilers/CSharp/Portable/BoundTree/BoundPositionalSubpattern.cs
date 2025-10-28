@@ -2,16 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Diagnostics;
-
 namespace Microsoft.CodeAnalysis.CSharp
 {
-    internal partial class BoundDeclarationPattern
+    internal partial class BoundPositionalSubpattern
     {
-        private partial void Validate()
+        internal BoundPositionalSubpattern WithPattern(BoundPattern pattern)
         {
-            Debug.Assert(DeclaredType is not null);
-            Debug.Assert(NarrowedType.Equals(DeclaredType.Type, TypeCompareKind.AllIgnoreOptions));
+            return this.Update(this.Symbol, pattern);
         }
     }
 }
