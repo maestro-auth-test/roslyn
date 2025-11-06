@@ -27032,7 +27032,7 @@ public class Container
                 );
         }
 
-        [Fact, WorkItem(49750, "https://github.com/dotnet/roslyn/issues/49750"), CompilerTrait(CompilerFeature.Patterns)]
+        [Fact, WorkItem(49750, "https://github.com/dotnet/roslyn/issues/49750")]
         public void MemberNotNullWhenTrue_RecursivePattern_WithSecondPattern()
         {
             var c = CreateCompilation(new[] { @"
@@ -27052,7 +27052,7 @@ public struct Test
         {
             case { IsOk: false }:
                 return Value; // 1
-            case { IsOk: true, IsIrrelevant: true }: // 2
+            case { IsOk: true, IsIrrelevant: true }:
                 return Value;
             default:
                 throw null!;
@@ -27062,12 +27062,9 @@ public struct Test
 ", MemberNotNullWhenAttributeDefinition });
 
             c.VerifyDiagnostics(
-                // 0.cs(17,24): warning CS8603: Possible null reference return.
+                // (17,24): warning CS8603: Possible null reference return.
                 //                 return Value; // 1
-                Diagnostic(ErrorCode.WRN_NullReferenceReturn, "Value").WithLocation(17, 24),
-                // 0.cs(18,26): hidden CS9271: The pattern is redundant.
-                //             case { IsOk: true, IsIrrelevant: true }: // 2
-                Diagnostic(ErrorCode.HDN_RedundantPattern, "true").WithLocation(18, 26)
+                Diagnostic(ErrorCode.WRN_NullReferenceReturn, "Value").WithLocation(17, 24)
                 );
         }
 
@@ -27104,7 +27101,7 @@ public struct Test
                 );
         }
 
-        [Fact, WorkItem(49750, "https://github.com/dotnet/roslyn/issues/49750"), CompilerTrait(CompilerFeature.Patterns)]
+        [Fact, WorkItem(49750, "https://github.com/dotnet/roslyn/issues/49750")]
         [WorkItem(51020, "https://github.com/dotnet/roslyn/issues/51020")]
         public void MemberNotNullWhenTrue_TupleInSwitchStatement()
         {
@@ -27124,7 +27121,7 @@ public class Test
         {
             case ({ IsOk: true }, null):
                 return Value;
-            case ({ IsOk: true }, not null): // 1
+            case ({ IsOk: true }, not null):
                 return Value;
             default:
                 throw null!;
@@ -27133,13 +27130,10 @@ public class Test
 }
 ", MemberNotNullWhenAttributeDefinition });
 
-            c.VerifyDiagnostics(
-                // 0.cs(17,39): hidden CS9271: The pattern is redundant.
-                //             case ({ IsOk: true }, not null): // 1
-                Diagnostic(ErrorCode.HDN_RedundantPattern, "null").WithLocation(17, 39));
+            c.VerifyDiagnostics();
         }
 
-        [Fact, WorkItem(49750, "https://github.com/dotnet/roslyn/issues/49750"), CompilerTrait(CompilerFeature.Patterns)]
+        [Fact, WorkItem(49750, "https://github.com/dotnet/roslyn/issues/49750")]
         [WorkItem(51020, "https://github.com/dotnet/roslyn/issues/51020")]
         public void MemberNotNullWhenTrue_TupleInSwitchExpression()
         {
@@ -27158,7 +27152,7 @@ public class Test
         return (this, o) switch
         {
             ({ IsOk: true }, null) => M2(Value),
-            ({ IsOk: true }, not null) => M2(Value), // 1
+            ({ IsOk: true }, not null) => M2(Value),
             _ => throw null!,
         };
     }
@@ -27167,10 +27161,7 @@ public class Test
 }
 ", MemberNotNullWhenAttributeDefinition });
 
-            c.VerifyDiagnostics(
-                // 0.cs(16,34): hidden CS9271: The pattern is redundant.
-                //             ({ IsOk: true }, not null) => M2(Value), // 1
-                Diagnostic(ErrorCode.HDN_RedundantPattern, "null").WithLocation(16, 34));
+            c.VerifyDiagnostics();
         }
 
         [Fact, WorkItem(49750, "https://github.com/dotnet/roslyn/issues/49750")]
@@ -27477,7 +27468,7 @@ public class C
                 );
         }
 
-        [Fact, WorkItem(51020, "https://github.com/dotnet/roslyn/issues/51020"), CompilerTrait(CompilerFeature.Patterns)]
+        [Fact, WorkItem(51020, "https://github.com/dotnet/roslyn/issues/51020")]
         public void PatternOnTuple_SwitchExpression()
         {
             var src = @"
@@ -27491,8 +27482,8 @@ public class C
         _ = (o, o2) switch
         {
             (not null, null) => Test(o, o2), // 1
-            (not null, not null) => Test(o, o2), // 2
-            _ => Test(o, o2), // 3
+            (not null, not null) => Test(o, o2),
+            _ => Test(o, o2), // 2
         };
     }
 
@@ -27500,9 +27491,9 @@ public class C
     {
         _ = (true, (o, o2)) switch
         {
-            (true, (not null, null)) => Test(o, o2), // 4
-            (_, (not null, not null)) => Test(o, o2), // 5
-            _ => Test(o, o2), // 6
+            (true, (not null, null)) => Test(o, o2), // 3
+            (_, (not null, not null)) => Test(o, o2), // 4
+            _ => Test(o, o2), // 5
         };
     }
 }
@@ -27512,25 +27503,22 @@ public class C
                 // (11,41): warning CS8604: Possible null reference argument for parameter 'o2' in 'int C.Test(object o, object o2)'.
                 //             (not null, null) => Test(o, o2), // 1
                 Diagnostic(ErrorCode.WRN_NullReferenceArgument, "o2").WithArguments("o2", "int C.Test(object o, object o2)").WithLocation(11, 41),
-                // (12,28): hidden CS9271: The pattern is redundant.
-                //             (not null, not null) => Test(o, o2), // 2
-                Diagnostic(ErrorCode.HDN_RedundantPattern, "null").WithLocation(12, 28),
                 // (13,23): warning CS8604: Possible null reference argument for parameter 'o' in 'int C.Test(object o, object o2)'.
-                //             _ => Test(o, o2), // 3
+                //             _ => Test(o, o2), // 2
                 Diagnostic(ErrorCode.WRN_NullReferenceArgument, "o").WithArguments("o", "int C.Test(object o, object o2)").WithLocation(13, 23),
                 // (21,46): warning CS8604: Possible null reference argument for parameter 'o' in 'int C.Test(object o, object o2)'.
-                //             (true, (not null, null)) => Test(o, o2), // 4
+                //             (true, (not null, null)) => Test(o, o2), // 3
                 Diagnostic(ErrorCode.WRN_NullReferenceArgument, "o").WithArguments("o", "int C.Test(object o, object o2)").WithLocation(21, 46),
                 // (22,47): warning CS8604: Possible null reference argument for parameter 'o' in 'int C.Test(object o, object o2)'.
-                //             (_, (not null, not null)) => Test(o, o2), // 5
+                //             (_, (not null, not null)) => Test(o, o2), // 4
                 Diagnostic(ErrorCode.WRN_NullReferenceArgument, "o").WithArguments("o", "int C.Test(object o, object o2)").WithLocation(22, 47),
                 // (23,23): warning CS8604: Possible null reference argument for parameter 'o' in 'int C.Test(object o, object o2)'.
-                //             _ => Test(o, o2), // 6
+                //             _ => Test(o, o2), // 5
                 Diagnostic(ErrorCode.WRN_NullReferenceArgument, "o").WithArguments("o", "int C.Test(object o, object o2)").WithLocation(23, 23)
                 );
         }
 
-        [Fact, WorkItem(51020, "https://github.com/dotnet/roslyn/issues/51020"), CompilerTrait(CompilerFeature.Patterns)]
+        [Fact, WorkItem(51020, "https://github.com/dotnet/roslyn/issues/51020")]
         public void PatternOnTuple_SwitchStatement()
         {
             var src = @"
@@ -27546,11 +27534,11 @@ public class C
             case (not null, null):
                 Test(o, o2); // 1
                 break;
-            case (not null, not null): // 2
+            case (not null, not null):
                 Test(o, o2);
                 break;
             default:
-                Test(o, o2); // 3
+                Test(o, o2); // 2
                 break;
         }
     }
@@ -27560,13 +27548,13 @@ public class C
         switch (true, (o, o2))
         {
             case (true, (not null, null)):
-                Test(o, o2); // 4
+                Test(o, o2); // 3
                 break;
             case (_, (not null, not null)):
-                Test(o, o2); // 5
+                Test(o, o2); // 4
                 break;
             default:
-                Test(o, o2); // 6
+                Test(o, o2); // 5
                 break;
         };
     }
@@ -27577,25 +27565,22 @@ public class C
                 // (12,25): warning CS8604: Possible null reference argument for parameter 'o2' in 'void C.Test(object o, object o2)'.
                 //                 Test(o, o2); // 1
                 Diagnostic(ErrorCode.WRN_NullReferenceArgument, "o2").WithArguments("o2", "void C.Test(object o, object o2)").WithLocation(12, 25),
-                // (14,33): hidden CS9271: The pattern is redundant.
-                //             case (not null, not null): // 2
-                Diagnostic(ErrorCode.HDN_RedundantPattern, "null").WithLocation(14, 33),
                 // (18,22): warning CS8604: Possible null reference argument for parameter 'o' in 'void C.Test(object o, object o2)'.
-                //                 Test(o, o2); // 3
+                //                 Test(o, o2); // 2
                 Diagnostic(ErrorCode.WRN_NullReferenceArgument, "o").WithArguments("o", "void C.Test(object o, object o2)").WithLocation(18, 22),
                 // (28,22): warning CS8604: Possible null reference argument for parameter 'o' in 'void C.Test(object o, object o2)'.
-                //                 Test(o, o2); // 4
+                //                 Test(o, o2); // 3
                 Diagnostic(ErrorCode.WRN_NullReferenceArgument, "o").WithArguments("o", "void C.Test(object o, object o2)").WithLocation(28, 22),
                 // (31,22): warning CS8604: Possible null reference argument for parameter 'o' in 'void C.Test(object o, object o2)'.
-                //                 Test(o, o2); // 5
+                //                 Test(o, o2); // 4
                 Diagnostic(ErrorCode.WRN_NullReferenceArgument, "o").WithArguments("o", "void C.Test(object o, object o2)").WithLocation(31, 22),
                 // (34,22): warning CS8604: Possible null reference argument for parameter 'o' in 'void C.Test(object o, object o2)'.
-                //                 Test(o, o2); // 6
+                //                 Test(o, o2); // 5
                 Diagnostic(ErrorCode.WRN_NullReferenceArgument, "o").WithArguments("o", "void C.Test(object o, object o2)").WithLocation(34, 22)
                 );
         }
 
-        [Fact, WorkItem(49750, "https://github.com/dotnet/roslyn/issues/49750"), CompilerTrait(CompilerFeature.Patterns)]
+        [Fact, WorkItem(49750, "https://github.com/dotnet/roslyn/issues/49750")]
         public void MemberNotNullWhenTrue_RecursivePattern_TypeTest()
         {
             var c = CreateCompilation(new[] { @"
@@ -27620,10 +27605,7 @@ public struct Test
 ", MemberNotNullWhenAttributeDefinition });
 
             c.VerifyDiagnostics(
-                // 0.cs(15,26): hidden CS9274: The pattern is redundant.
-                //             case { IsOk: bool }:
-                Diagnostic(ErrorCode.HDN_RedundantPattern, "bool").WithLocation(15, 26),
-                // 0.cs(16,24): warning CS8603: Possible null reference return.
+                // (16,24): warning CS8603: Possible null reference return.
                 //                 return Value; // 1
                 Diagnostic(ErrorCode.WRN_NullReferenceReturn, "Value").WithLocation(16, 24)
                 );
@@ -27660,7 +27642,7 @@ public struct Test
                 );
         }
 
-        [Fact, WorkItem(49750, "https://github.com/dotnet/roslyn/issues/49750"), CompilerTrait(CompilerFeature.Patterns)]
+        [Fact, WorkItem(49750, "https://github.com/dotnet/roslyn/issues/49750")]
         public void MemberNotNullWhenTrue_RecursivePattern_WithBoolPattern()
         {
             var c = CreateCompilation(new[] { @"
@@ -27680,21 +27662,18 @@ public struct Test
         {
             case { IsOk: true, IsIrrelevant: true }:
                 return Value;
-            case { IsOk: true, IsIrrelevant: not true }: // 1
+            case { IsOk: true, IsIrrelevant: not true }:
                 return Value;
             default:
-                return Value; // 2
+                return Value; // 1
         }
     }
 }
 ", MemberNotNullWhenAttributeDefinition });
 
             c.VerifyDiagnostics(
-                // 0.cs(18,50): hidden CS9271: The pattern is redundant.
-                //             case { IsOk: true, IsIrrelevant: not true }: // 1
-                Diagnostic(ErrorCode.HDN_RedundantPattern, "true").WithLocation(18, 50),
-                // 0.cs(21,24): warning CS8603: Possible null reference return.
-                //                 return Value; // 2
+                // (21,24): warning CS8603: Possible null reference return.
+                //                 return Value; // 1
                 Diagnostic(ErrorCode.WRN_NullReferenceReturn, "Value").WithLocation(21, 24)
                 );
         }
@@ -51988,7 +51967,7 @@ class C
         }
 
         // <remarks>Ported from <see cref="FlowTests.IsCondAccess_04"/>.</remarks>
-        [Fact, CompilerTrait(CompilerFeature.Patterns)]
+        [Fact]
         public void IsCondAccess_04()
         {
             var source = @"
@@ -52014,22 +51993,22 @@ class C
 
     void M3(C? c, object? x)
     {
-        _ = c?.M0(x = 0) is not null and C // 3
+        _ = c?.M0(x = 0) is not null and C
             ? x.ToString()
-            : x.ToString(); // 4
+            : x.ToString(); // 3
     }
 
     void M4(C? c, object? x)
     {
         _ = c?.M0(x = 0) is null
-            ? x.ToString() // 5
+            ? x.ToString() // 4
             : x.ToString();
     }
 
     void M5(C? c, object? x)
     {
-        _ = c?.M0(x = 0) is not (C or { }) // 6
-            ? x.ToString() // 7
+        _ = c?.M0(x = 0) is not (C or { })
+            ? x.ToString() // 5
             : x.ToString();
     }
 
@@ -52037,14 +52016,14 @@ class C
     {
         _ = c?.M0(x = 0) is _ and C
             ? x.ToString()
-            : x.ToString(); // 8
+            : x.ToString(); // 6
     }
 
     void M7(C? c, object? x)
     {
         _ = c?.M0(x = 0) is C and _
             ? x.ToString()
-            : x.ToString(); // 9
+            : x.ToString(); // 7
     }
 }
 ";
@@ -52055,26 +52034,20 @@ class C
                 // (18,15): warning CS8602: Dereference of a possibly null reference.
                 //             ? x.ToString() // 2
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "x").WithLocation(18, 15),
-                // (24,42): warning CS9336: The pattern is redundant.
-                //         _ = c?.M0(x = 0) is not null and C // 3
-                Diagnostic(ErrorCode.WRN_RedundantPattern, "C").WithLocation(24, 42),
                 // (26,15): warning CS8602: Dereference of a possibly null reference.
-                //             : x.ToString(); // 4
+                //             : x.ToString(); // 3
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "x").WithLocation(26, 15),
                 // (32,15): warning CS8602: Dereference of a possibly null reference.
-                //             ? x.ToString() // 5
+                //             ? x.ToString() // 4
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "x").WithLocation(32, 15),
-                // (38,39): hidden CS9271: The pattern is redundant.
-                //         _ = c?.M0(x = 0) is not (C or { }) // 6
-                Diagnostic(ErrorCode.HDN_RedundantPattern, "{ }").WithLocation(38, 39),
                 // (39,15): warning CS8602: Dereference of a possibly null reference.
-                //             ? x.ToString() // 7
+                //             ? x.ToString() // 5
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "x").WithLocation(39, 15),
                 // (47,15): warning CS8602: Dereference of a possibly null reference.
-                //             : x.ToString(); // 8
+                //             : x.ToString(); // 6
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "x").WithLocation(47, 15),
                 // (54,15): warning CS8602: Dereference of a possibly null reference.
-                //             : x.ToString(); // 9
+                //             : x.ToString(); // 7
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "x").WithLocation(54, 15)
                 );
         }
@@ -52273,7 +52246,7 @@ class C
                 );
         }
 
-        [Fact, CompilerTrait(CompilerFeature.Patterns)]
+        [Fact]
         public void IsCondAccess_10()
         {
             var source = @"
@@ -52498,7 +52471,7 @@ class C
                 );
         }
 
-        [Theory, CompilerTrait(CompilerFeature.Patterns)]
+        [Theory]
         [InlineData("[NotNullWhen(true)] out object? obj")]
         [InlineData("[MaybeNullWhen(false)] out object obj")]
         public void IsCondAccess_NotNullWhenTrue_03(string param)
@@ -52540,94 +52513,88 @@ class C
 
     static void M5(C? c, object? obj)
     {
-        _ = c?.M0(out obj) is bool or true // 11
-            ? obj.ToString() // 12
-            : obj.ToString(); // 13
+        _ = c?.M0(out obj) is bool or true
+            ? obj.ToString() // 11
+            : obj.ToString(); // 12
     }
 
     static void M6(C? c, object? obj)
     {
-        _ = c?.M0(out obj) is { } or true // 14
-            ? obj.ToString() // 15
-            : obj.ToString(); // 16
+        _ = c?.M0(out obj) is { } or true
+            ? obj.ToString() // 13
+            : obj.ToString(); // 14
     }
 
     static void M7(C? c, object? obj)
     {
         _ = c?.M0(out obj) is true or false
-            ? obj.ToString() // 17
-            : obj.ToString(); // 18
+            ? obj.ToString() // 15
+            : obj.ToString(); // 16
     }
 
     static void M8(C? c, object? obj)
     {
         _ = c?.M0(out obj) is null
-            ? obj.ToString() // 19
-            : obj.ToString(); // 20
+            ? obj.ToString() // 17
+            : obj.ToString(); // 18
     }
 }
 ";
             var comp = CreateNullableCompilation(new[] { source, NotNullWhenAttributeDefinition, MaybeNullWhenAttributeDefinition });
             comp.VerifyDiagnostics(
-                // 0.cs(10,39): error CS0029: Cannot implicitly convert type 'int' to 'bool?'
+                // (10,39): error CS0029: Cannot implicitly convert type 'int' to 'bool?'
                 //         _ = c?.M0(out obj) is true or 1 // 1
                 Diagnostic(ErrorCode.ERR_NoImplicitConv, "1").WithArguments("int", "bool?").WithLocation(10, 39),
-                // 0.cs(12,15): warning CS8602: Dereference of a possibly null reference.
+                // (12,15): warning CS8602: Dereference of a possibly null reference.
                 //             : obj.ToString(); // 2
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "obj").WithLocation(12, 15),
-                // 0.cs(17,13): warning CS8794: An expression of type 'bool?' always matches the provided pattern.
+                // (17,13): warning CS8794: An expression of type 'bool?' always matches the provided pattern.
                 //         _ = c?.M0(out obj) is true or var x // 3, 4
                 Diagnostic(ErrorCode.WRN_IsPatternAlways, "c?.M0(out obj) is true or var x").WithArguments("bool?").WithLocation(17, 13),
-                // 0.cs(17,43): error CS8780: A variable may not be declared within a 'not' or 'or' pattern.
+                // (17,43): error CS8780: A variable may not be declared within a 'not' or 'or' pattern.
                 //         _ = c?.M0(out obj) is true or var x // 3, 4
                 Diagnostic(ErrorCode.ERR_DesignatorBeneathPatternCombinator, "x").WithLocation(17, 43),
-                // 0.cs(18,15): warning CS8602: Dereference of a possibly null reference.
+                // (18,15): warning CS8602: Dereference of a possibly null reference.
                 //             ? obj.ToString() // 5
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "obj").WithLocation(18, 15),
-                // 0.cs(24,13): warning CS8794: An expression of type 'bool?' always matches the provided pattern.
+                // (24,13): warning CS8794: An expression of type 'bool?' always matches the provided pattern.
                 //         _ = c?.M0(out obj) is _ or true // 6
                 Diagnostic(ErrorCode.WRN_IsPatternAlways, "c?.M0(out obj) is _ or true").WithArguments("bool?").WithLocation(24, 13),
-                // 0.cs(25,15): warning CS8602: Dereference of a possibly null reference.
+                // (25,15): warning CS8602: Dereference of a possibly null reference.
                 //             ? obj.ToString() // 7
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "obj").WithLocation(25, 15),
-                // 0.cs(31,44): error CS8780: A variable may not be declared within a 'not' or 'or' pattern.
+                // (31,44): error CS8780: A variable may not be declared within a 'not' or 'or' pattern.
                 //         _ = c?.M0(out obj) is true or bool b // 8
                 Diagnostic(ErrorCode.ERR_DesignatorBeneathPatternCombinator, "b").WithLocation(31, 44),
-                // 0.cs(32,15): warning CS8602: Dereference of a possibly null reference.
+                // (32,15): warning CS8602: Dereference of a possibly null reference.
                 //             ? obj.ToString() // 9
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "obj").WithLocation(32, 15),
-                // 0.cs(33,15): warning CS8602: Dereference of a possibly null reference.
+                // (33,15): warning CS8602: Dereference of a possibly null reference.
                 //             : obj.ToString(); // 10
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "obj").WithLocation(33, 15),
-                // 0.cs(38,39): hidden CS9271: The pattern is redundant.
-                //         _ = c?.M0(out obj) is bool or true // 11
-                Diagnostic(ErrorCode.HDN_RedundantPattern, "true").WithLocation(38, 39),
-                // 0.cs(39,15): warning CS8602: Dereference of a possibly null reference.
-                //             ? obj.ToString() // 12
+                // (39,15): warning CS8602: Dereference of a possibly null reference.
+                //             ? obj.ToString() // 11
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "obj").WithLocation(39, 15),
-                // 0.cs(40,15): warning CS8602: Dereference of a possibly null reference.
-                //             : obj.ToString(); // 13
+                // (40,15): warning CS8602: Dereference of a possibly null reference.
+                //             : obj.ToString(); // 12
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "obj").WithLocation(40, 15),
-                // 0.cs(45,38): hidden CS9271: The pattern is redundant.
-                //         _ = c?.M0(out obj) is { } or true // 14
-                Diagnostic(ErrorCode.HDN_RedundantPattern, "true").WithLocation(45, 38),
-                // 0.cs(46,15): warning CS8602: Dereference of a possibly null reference.
-                //             ? obj.ToString() // 15
+                // (46,15): warning CS8602: Dereference of a possibly null reference.
+                //             ? obj.ToString() // 13
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "obj").WithLocation(46, 15),
-                // 0.cs(47,15): warning CS8602: Dereference of a possibly null reference.
-                //             : obj.ToString(); // 16
+                // (47,15): warning CS8602: Dereference of a possibly null reference.
+                //             : obj.ToString(); // 14
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "obj").WithLocation(47, 15),
-                // 0.cs(53,15): warning CS8602: Dereference of a possibly null reference.
-                //             ? obj.ToString() // 17
+                // (53,15): warning CS8602: Dereference of a possibly null reference.
+                //             ? obj.ToString() // 15
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "obj").WithLocation(53, 15),
-                // 0.cs(54,15): warning CS8602: Dereference of a possibly null reference.
-                //             : obj.ToString(); // 18
+                // (54,15): warning CS8602: Dereference of a possibly null reference.
+                //             : obj.ToString(); // 16
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "obj").WithLocation(54, 15),
-                // 0.cs(60,15): warning CS8602: Dereference of a possibly null reference.
-                //             ? obj.ToString() // 19
+                // (60,15): warning CS8602: Dereference of a possibly null reference.
+                //             ? obj.ToString() // 17
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "obj").WithLocation(60, 15),
-                // 0.cs(61,15): warning CS8602: Dereference of a possibly null reference.
-                //             : obj.ToString(); // 20
+                // (61,15): warning CS8602: Dereference of a possibly null reference.
+                //             : obj.ToString(); // 18
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "obj").WithLocation(61, 15)
                 );
         }
@@ -159264,7 +159231,7 @@ class C
                 );
         }
 
-        [Fact, WorkItem(51942, "https://github.com/dotnet/roslyn/issues/51942"), CompilerTrait(CompilerFeature.Patterns)]
+        [Fact, WorkItem(51942, "https://github.com/dotnet/roslyn/issues/51942")]
         public void MemberNotNullWhen_BoolProperty_InPattern()
         {
             var source =
@@ -159296,10 +159263,7 @@ class C
 ";
             var comp = CreateCompilation(new[] { source, MemberNotNullWhenAttributeDefinition });
             comp.VerifyDiagnostics(
-                // 0.cs(15,21): hidden CS9274: The pattern is redundant.
-                //             { Init: { } } => field.Length, // 1
-                Diagnostic(ErrorCode.HDN_RedundantPattern, "{ }").WithLocation(15, 21),
-                // 0.cs(15,30): warning CS8602: Dereference of a possibly null reference.
+                // (15,30): warning CS8602: Dereference of a possibly null reference.
                 //             { Init: { } } => field.Length, // 1
                 Diagnostic(ErrorCode.WRN_NullReferenceReceiver, "field").WithLocation(15, 30)
                 );
