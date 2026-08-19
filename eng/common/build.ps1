@@ -8,7 +8,6 @@ Param(
   [bool] $warnAsError = $true,
   [string] $warnNotAsError = '',
   [bool] $nodeReuse = $true,
-  [bool][Alias('mt')]$msbuildMultiThreaded = $false,
   [switch] $buildCheck = $false,
   [switch][Alias('r')]$restore,
   [switch] $deployDeps,
@@ -24,7 +23,6 @@ Param(
   [switch] $clean,
   [switch][Alias('pb')]$productBuild,
   [switch]$fromVMR,
-  [switch]$disablePipelineSetResult,
   [switch][Alias('bl')]$binaryLog,
   [string][Alias('bln')]$binaryLogName = '',
   [switch][Alias('nobl')]$excludeCIBinarylog,
@@ -80,10 +78,8 @@ function Print-Usage() {
   Write-Host "  -excludePrereleaseVS    Set to exclude build engines in prerelease versions of Visual Studio"
   Write-Host "  -nativeToolsOnMachine   Sets the native tools on machine environment variable (indicating that the script should use native tools on machine)"
   Write-Host "  -nodeReuse <value>      Sets nodereuse msbuild parameter ('true' or 'false')"
-  Write-Host "  -msbuildMultiThreaded <value> Sets MSBuild's multi-threaded mode, i.e. the -mt switch ('1' or '0') (short: -mt)"
   Write-Host "  -buildCheck             Sets /check msbuild parameter"
   Write-Host "  -fromVMR                Set when building from within the VMR"
-  Write-Host "  -disablePipelineSetResult Set to disable masking the actual exit code in the pipeline when the build fails"
   Write-Host ""
 
   Write-Host "Command line arguments not listed above are passed thru to msbuild."
@@ -177,10 +173,7 @@ try {
     if (-not $excludeCIBinarylog) {
       $binaryLog = $true
     }
-    # Node reuse isn't used on CI unless it was explicitly requested via -nodeReuse.
-    if (-not $PSBoundParameters.ContainsKey('nodeReuse')) {
-      $nodeReuse = $false
-    }
+    $nodeReuse = $false
   }
 
   if (-not [string]::IsNullOrEmpty($binaryLogName)) {
